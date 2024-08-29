@@ -39,7 +39,7 @@ window.onload = () => {
         fragment.appendChild(itemTask);
     }
     listTasks?.appendChild(fragment);
-    // showItemsLeft();
+    showItemsLeft();
     showSelectAll();
     showFooter();
     showClearCompleted();
@@ -88,28 +88,9 @@ export const addNewTask = (event: KeyboardEvent) => {
             showFooter();
             showItemsLeft();
             showSelectAll();
-
         }
     }
 };
-// const newTaskInput = document.querySelector("input.todo-input") as HTMLInputElement;
-// newTaskInput?.addEventListener('keydown', (event) => {
-//     if ('key' in event && event.key === 'Enter') {
-//         if (newTaskInput.value.trim() === '') {
-//             alert("Vui lòng nhập công việc");
-//             newTaskInput.value = "";
-//             return;
-//         }
-//         console.log('trung');
-//         const taskId = generateRandomId(10);
-//         updateStorage(taskId, newTaskInput.value.trim(), ENUM_TYPE.NEW);
-//         // createNewTask(taskId, {text: newTaskInput.value.trim(), completed: false});
-//         newTaskInput.value = "";
-//         // showFooter();
-//         showItemsLeft();
-//         // showSelectAll();
-//     }
-// });
 
 //Delete, Complete, Edit, New task ở Local Storage
 export const updateStorage = (index: string, text: string, type: any) => {
@@ -220,8 +201,20 @@ export function selectAll() {
             updateStorage(taskInComplete.id, '', ENUM_TYPE.COMPLETE);
         });
     }
-    // const btnSelected = document.querySelector("button.selected");
-    // filterTodo(btnSelected);
+    const btnSelected = document.querySelector("button.selected") as HTMLButtonElement;
+    tasks.forEach(function(task) {
+        switch(btnSelected.value) {
+            case ENUM_TAB.ALL:
+                (task as HTMLElement).style.display = "flex";
+                break;
+            case ENUM_TAB.COMPLETED:
+                (task as HTMLElement).style.display = (task.classList.contains("completed")) ? 'flex' : 'none';
+                break;
+            case ENUM_TAB.INCOMPLETE:
+                (task as HTMLElement).style.display = (!task.classList.contains("completed")) ? 'flex' : 'none';
+                break;
+        }
+    });
     showClearCompleted();
     showItemsLeft();
     showSelectAll();
