@@ -30,9 +30,6 @@ export const addHTML = (taskValue: any) => {
     </>
 };
 
-
-{/* <label ondblclick="onEdit(this)">${taskValue.text}</label> */}
-
 //Render task
 export const renderTask = (index: string, taskValue: any) => {
     let innerTask = document.createElement("li");
