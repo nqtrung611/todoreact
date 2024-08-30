@@ -21,29 +21,17 @@ const ENUM_TAB = {
     INCOMPLETE: 'incomplete'
 }
 
-// const localItem = 'Todo_user';
-
-window.onload = () => {
-    const listTasks = document.querySelector(".todo-list");
-    const Todo_user = localStorage.getItem('Todo_user');
-    if (!Todo_user) {
-        localStorage.setItem('Todo_user','{}');
-    }
-    const todoData = JSON.parse(Todo_user as string);
-    const fragment = document.createDocumentFragment();
-    for (const index in todoData) {
-        let itemTask = renderTask(index, todoData[index]);
-        if (todoData[index].completed) {
-            itemTask.classList.add("completed");
-        }
-        fragment.appendChild(itemTask);
-    }
-    listTasks?.appendChild(fragment);
-    showItemsLeft();
-    showSelectAll();
-    showFooter();
-    showClearCompleted();
+export const addHTML = (taskValue: any) => {
+    <>
+        <img alt="" onClick={onComplete}/>
+        <label>{taskValue.text}</label>
+        <button className="delete">X</button>
+        <input type="text" style={{display: 'none'}}/>  
+    </>
 };
+
+
+{/* <label ondblclick="onEdit(this)">${taskValue.text}</label> */}
 
 //Render task
 export const renderTask = (index: string, taskValue: any) => {
@@ -52,10 +40,10 @@ export const renderTask = (index: string, taskValue: any) => {
     innerTask.classList.add("view");
     innerTask.setAttribute("id",index);
     innerTask.innerHTML = `
-        <img alt="" onclick="onComplete(this)">
-        <label ondblclick="editTask(this)">${taskValue.text}</label>
-        <button class="delete" onclick="onDelete(this)"><i class="fa-solid fa-x"></i></button>
-        <input type="text" style="display: none">        
+        <img alt="" class="taskImg">
+        <label>${taskValue.text}</label>
+        <button class="delete">X</button>
+        <input type="text" style="display: none">
     `;
     return innerTask;
 }
@@ -222,33 +210,33 @@ export function selectAll() {
 }
 
 // //Click Complete task
-// export function onComplete(e) {
-//     const taskId = e.parentElement.id;
-//     updateStorage(taskId, '', ENUM_TYPE.COMPLETE);
-//     const btnSelected = document.querySelector("button.selected");
-//     e.parentElement.classList.toggle("completed");
-//     if (btnSelected.value === ENUM_TAB.COMPLETED) {
-//         e.parentElement.style.display = (e.parentElement.classList.contains("completed")) ? 'flex' : 'none';
-//     }
-//     if (btnSelected.value === ENUM_TAB.INCOMPLETE) {
-//         e.parentElement.style.display = (!e.parentElement.classList.contains("completed")) ? 'flex' : 'none';
-//     }
-//     showItemsLeft();
-//     showSelectAll();
-//     showClearCompleted();
-// }
+export function onComplete(e: any) {
+    const taskId = e.parentElement.id;
+    updateStorage(taskId, '', ENUM_TYPE.COMPLETE);
+    const btnSelected = document.querySelector("button.selected") as HTMLButtonElement;
+    e.parentElement.classList.toggle("completed");
+    if (btnSelected.value === ENUM_TAB.COMPLETED) {
+        e.parentElement.style.display = (e.parentElement.classList.contains("completed")) ? 'flex' : 'none';
+    }
+    if (btnSelected.value === ENUM_TAB.INCOMPLETE) {
+        e.parentElement.style.display = (!e.parentElement.classList.contains("completed")) ? 'flex' : 'none';
+    }
+    showItemsLeft();
+    showSelectAll();
+    showClearCompleted();
+}
 
-// //Click Delete task
-// export function onDelete(e) {
-//     const taskId = e.parentElement.id;
-//     const taskDelete = document.querySelector(`#${taskId}`);
-//     taskDelete.parentNode.removeChild(taskDelete);
-//     updateStorage(taskId, '', ENUM_TYPE.DELETE);
-//     showItemsLeft();
-//     showSelectAll();
-//     showFooter();
-//     showClearCompleted();
-// }
+//Click Delete task
+export function onDelete(e: any) {
+    const taskId = e.parentElement.id;
+    const taskDelete = document.querySelector(`#${taskId}`);
+    taskDelete?.parentNode?.removeChild(taskDelete);
+    updateStorage(taskId, '', ENUM_TYPE.DELETE);
+    showItemsLeft();
+    showSelectAll();
+    showFooter();
+    showClearCompleted();
+}
 
 //Click Clear Completed
 export function clearCompleted() {
@@ -262,38 +250,38 @@ export function clearCompleted() {
     showFooter();
 }
 
-// //Edit task
-// export function editTask(element) {
-//     element.parentElement.classList.remove("view");
-//     element.parentElement.querySelector("img").style.display = "none";
-//     const inputElement = element.parentElement.querySelector("input");
-//     inputElement.style.display = "inline-block";
-//     inputElement.focus();
-//     inputElement.value = element.textContent;
-//     element.style.display = "none";
-//     inputElement.addEventListener('keydown', function(event) {
-//         if (event.key === 'Escape') {
-//             showTaskAgain(element, inputElement);
-//         }
-//         if (event.key === 'Enter') {
-//             if (inputElement.value.trim() === '') {
-//                 alert("Vui lòng nhập công việc");
-//             } else {
-//                 showTaskAgain(element, inputElement);
-//                 element.innerText = inputElement.value.trim();
-//                 updateStorage(element.parentElement.id, inputElement.value.trim(), ENUM_TYPE.EDIT);
-//             }
-//         }
-//     });
-//     inputElement.addEventListener('blur', function() {
-//         showTaskAgain(element, inputElement);
-//     });
-// }
+//Edit task
+export function onEdit(e: any) {
+    e.parentElement.classList.remove("view");
+    e.parentElement.querySelector("img").style.display = "none";
+    const inputElement = e.parentElement.querySelector("input");
+    inputElement.style.display = "inline-block";
+    inputElement.focus();
+    inputElement.value = e.textContent;
+    e.style.display = "none";
+    inputElement.addEventListener('keydown', function(event: KeyboardEvent) {
+        if (event.key === 'Escape') {
+            showTaskAgain(e, inputElement);
+        }
+        if (event.key === 'Enter') {
+            if (inputElement.value.trim() === '') {
+                alert("Vui lòng nhập công việc");
+            } else {
+                showTaskAgain(e, inputElement);
+                e.innerText = inputElement.value.trim();
+                updateStorage(e.parentElement.id, inputElement.value.trim(), ENUM_TYPE.EDIT);
+            }
+        }
+    });
+    inputElement.addEventListener('blur', function() {
+        showTaskAgain(e, inputElement);
+    });
+}
 
 // //Show task sau khi chỉnh sửa
-// export function showTaskAgain(e, inputElement) {
-//     e.parentElement.querySelector("img").style.display = "block";
-//     e.style.display = "block";
-//     inputElement.style.display = "none";
-//     e.parentElement.classList.add("view");
-// }
+export function showTaskAgain(e: any, inputElement: any) {
+    e.parentElement.querySelector("img").style.display = "block";
+    e.style.display = "block";
+    inputElement.style.display = "none";
+    e.parentElement.classList.add("view");
+}
