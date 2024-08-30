@@ -34,7 +34,6 @@ export default function Todos () {
     const editTask = (e: any) => {
         if (e.target.tagName === 'LABEL') {
             onEdit(e.target);
-            // console.log(e.target);
         }
     };
     return (
