@@ -119,6 +119,19 @@ export function showFooter() {
     footer.style.display = (!tasks.length) ? 'none' : 'block';
 }
 
+//Check Select All
+export function checkSelectAll() {
+    const noop = () => {};
+    const label = document.querySelector('label.toggle-all-label') as HTMLElement;
+    if (label) {
+        if (label.style.display === "none") {
+            noop();
+            return;
+        }
+    }
+    selectAll();
+}
+
 //Show Select All và in đậm
 export function showSelectAll() {
     const tasks = document.querySelectorAll(".task");
